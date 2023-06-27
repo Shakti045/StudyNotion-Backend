@@ -68,7 +68,7 @@ exports.resetpasswordtokengeneration=async (req,res)=>{
 
    const token=crypto.randomUUID();
    await User.findOneAndUpdate({email:email},{resetpasswordtoken:token,tokenecreated:Date.now()})
-   await sendemail(email,"Password updation request",`https://localhost:3000/resetpassword/${token}`);
+   await sendemail(email,"Password updation request",`https://studynotionv1.netlify.app/resetpassword/${token}`);
    res.status(200).json({
     "Success":true,
     "Message":"A link for password reset has been sent to your mail id"

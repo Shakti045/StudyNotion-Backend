@@ -1,7 +1,7 @@
 const srouter = require("express").Router();
 const passport = require("../controllers/passport");
 const User=require('../models/user');
-const CLIENT_URL = "http://localhost:3000";
+const CLIENT_URL = "https://studynotionv1.netlify.app";
 const jwt=require('jsonwebtoken');
 require('dotenv').config();
 
