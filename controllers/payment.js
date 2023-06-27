@@ -265,7 +265,8 @@ exports.sendpaymentdetails=async(req,res)=>{
     console.log("Error while sending payment details","=>",err);
     return res.status(500).json({
       Success:false,
-      Message:"Error while sending payment details"
+      Message:"Some Error while sending payment details",
+      error:err
     })
   }
 }
