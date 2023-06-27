@@ -226,6 +226,7 @@ exports.sendpaymentdetails=async(req,res)=>{
       // ignoreDefaultArgs: ['--enable-features=NetworkService,NetworkServiceInProcess']
     });
     const page=await browser.newPage();
+    await page.setCacheEnabled(false);
     // await page.evaluate(()=>{
     //   document.body.style.backgroundColor = 'blue';
     // })
