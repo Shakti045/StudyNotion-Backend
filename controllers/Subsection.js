@@ -2,6 +2,7 @@ const Subsection=require('../models/subsection')
 const uploadmedia=require('../utils/file')
 const Section=require('../models/section');
 const  mongoose  = require('mongoose');
+const uploadtoaws=require('../utils/AwsUpload');
 exports.createsubsection=async(req,res)=>{
     try{
         const {sectionid,subsectionname,description}=req.body;
@@ -13,8 +14,10 @@ exports.createsubsection=async(req,res)=>{
             })
         }
 
-        const videouploaded=await uploadmedia(video);
-       const newsubsection= await Subsection.create({subsectionname,description,videourl:videouploaded.secure_url,relatedsection:sectionid,duration:videouploaded.duration});
+        // const videouploaded=await uploadmedia(video);
+       const videouploaded=await uploadtoaws(video);
+       console.log(videouploaded);
+       const newsubsection= await Subsection.create({subsectionname,description,videourl:videouploaded[0],relatedsection:sectionid,duration:videouploaded[1]});
        await Section.findByIdAndUpdate({_id:sectionid},{$push:{subsections:newsubsection._id}});
        res.status(200).json({
         Success:true,
