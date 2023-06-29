@@ -1,5 +1,7 @@
 const Profile=require('../models/profile');
 const User=require('../models/user');
+const Courseprogress=require('../models/courseprogress');
+const { default: mongoose } = require('mongoose');
 exports.updateprofile=async (req,res)=>{
     try{
        
@@ -49,16 +51,50 @@ exports.getprofile=async(req,res)=>{
     }
 }
 
+async function getprogressofcourse(courseid,userid){
+    try{
+      const progresscount=await Courseprogress.findOne({user:userid,course:courseid});
+      if(!progresscount){
+        return 0;
+      }
+      return progresscount?.completedvideos.length;
+    }catch(err){
 
+    }
+}
+
+function gettotalvideo(sections){
+    let k=0;
+    for(const section of sections){
+        k=k+section.subsections.length
+    }
+    return k;
+}
 exports.getregisteredcourses=async(req,res)=>{
     try{
         const {id}=req.user;
-        const courses=await User.findById(id).populate("coursesenrolled");
+        const courses=await User.findById(id).populate({
+            path:"coursesenrolled",
+            populate:{
+                path:"sections"
+            }
+                });
+        const progressarray=[];        
+        for(const course of courses.coursesenrolled){
+            const progresscount=await getprogressofcourse(course._id,id);
+            const totalvideo= gettotalvideo(course.sections);
+            let progress=0;
+            if(totalvideo!==0){
+              progress=(progresscount/totalvideo)*100;
+            }
+            progressarray.push(progress)
+        }
+        // console.log(progressarray);
         return res.status(200).json({
             Success:true,
             Message:"courses fetched successfully",
-            courses:courses.coursesenrolled
-
+            courses:courses.coursesenrolled,
+            progress:progressarray
         })
     }catch(err){
         console.log("Error while getting registered courses","=>",err);

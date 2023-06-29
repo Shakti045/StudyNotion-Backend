@@ -3,6 +3,7 @@ const Category=require('../models/category');
 const User=require('../models/user')
 const rating=require('../models/rating')
 const uploadmedia=require('../utils/file');
+const Courseprogress=require('../models/courseprogress');
 const  mongoose  = require('mongoose');
 exports.createcourse=async (req,res)=>{
     try{
@@ -91,6 +92,33 @@ try{
 }
 }
 
+function convertSecondsToDuration(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = Math.floor((totalSeconds % 3600) % 60)
+  
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`
+    } else if (minutes > 0) {
+      return `${minutes}m ${seconds}s`
+    } else {
+      return `${seconds}s`
+    }
+  }
+  
+function calculateduration(sections){
+    if(sections.length===0){
+        return "00h 00min"
+    }
+
+    let duration=0;
+    for(const section of sections){
+        for(const subsection of section.subsections){
+            duration=duration+parseInt(subsection?.duration);
+        }
+    }
+    return convertSecondsToDuration(duration);
+}
 
 exports.getdetailsofcourse=async (req,res)=>{
     try{
@@ -102,7 +130,7 @@ exports.getdetailsofcourse=async (req,res)=>{
             path:"sections",
             populate:{
                 path:"subsections",
-                select:"subsectionname"
+                select:"subsectionname duration"
             }
         }).populate("ratingsandreview").populate("category").exec();
         if(!coursedetail){
@@ -111,10 +139,13 @@ exports.getdetailsofcourse=async (req,res)=>{
                 Message:"Couldnot find the course"
             })
         }
+        const duration=calculateduration(coursedetail.sections);
+        // console.log(duration);
         return res.status(200).json({
             Success:true,
             Message:"Dta fetched successfully",
             details:coursedetail,
+            duration:duration
         })
     }catch(err){
         console.log("Error while fetching coursedetails","=>",err);
@@ -247,6 +278,49 @@ exports.updatecoursestatus=async(req,res)=>{
         return res.status(500).json({
             Succes:false,
             Message:"Error while updating the course"
+        })
+    }
+}
+
+function calculatetotalvideo(sections){
+    let k=0;
+    for(const section of sections){
+        k=k+section.subsections.length;
+    }
+    return k;
+}
+
+exports.getfulldetailsofcourse=async(req,res)=>{
+    try{
+       const {id}=req.user;
+       const {courseid}=req.body;
+    //    console.log(id, courseid);
+       if(!id || !courseid){
+        return res.status(404).json({
+            Succes:false,
+            Message:"Invalid Request"
+        })
+       }
+       const coursedetails=await Course.findById({_id:courseid}).populate({
+        path:"sections",
+        populate:{
+            path:"subsections"
+        }
+       })
+       const completedvideos=await Courseprogress.findOne({user:id,course:courseid});
+       const totalvideo=calculatetotalvideo(coursedetails.sections);
+       return res.status(200).json({
+        Succes:true,
+        Message:"Details fetched suucessfully",
+        coursedetails:coursedetails,
+        completedvideos:completedvideos?completedvideos.completedvideos:[],
+        totalvideo:totalvideo
+       });
+    }catch(err){
+        console.log("Error while gettingfulldetails of the course","=>",err);
+        return res.status(500).json({
+            Succes:false,
+            Message:"Error while gettingfulldetails of the course"
         })
     }
 }

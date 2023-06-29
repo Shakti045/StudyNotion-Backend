@@ -4,9 +4,9 @@ const Section=require('../models/section');
 const  mongoose  = require('mongoose');
 exports.createsubsection=async(req,res)=>{
     try{
-        const {sectionid,subsectionname,description,duration="2hr 30min"}=req.body;
+        const {sectionid,subsectionname,description}=req.body;
         const video=req.files.video;
-        if(!sectionid || !subsectionname || !description || !duration || !video){
+        if(!sectionid || !subsectionname || !description ||  !video){
             return res.status(400).json({
                 Success:false,
                 Message:"All fields required"
@@ -14,7 +14,7 @@ exports.createsubsection=async(req,res)=>{
         }
 
         const videouploaded=await uploadmedia(video);
-       const newsubsection= await Subsection.create({subsectionname,description,duration,videourl:videouploaded.secure_url,relatedsection:sectionid});
+       const newsubsection= await Subsection.create({subsectionname,description,videourl:videouploaded.secure_url,relatedsection:sectionid,duration:videouploaded.duration});
        await Section.findByIdAndUpdate({_id:sectionid},{$push:{subsections:newsubsection._id}});
        res.status(200).json({
         Success:true,
@@ -22,7 +22,7 @@ exports.createsubsection=async(req,res)=>{
         subsection:newsubsection
        })
     }catch(err){
-        console.log("Erro while creating a subsection","=>",err);
+        console.log("Error while creating a subsection","=>",err);
         res.status(500).json({
             Success:false,
             Message:"Internal server errror while creating subsection"
@@ -68,9 +68,10 @@ exports.updatesubsection=async(req,res)=>{
         req.files?video=req.files.video:null;
         const tobeupdate={};
         if(video!==null){
-            console.log(video);
+            // console.log(video);
          const uploadedvideo=await uploadmedia(video);
         tobeupdate.videourl=uploadedvideo.secure_url;
+        tobeupdate.duration=uploadedvideo.duration;
         }
         if(description){
             tobeupdate.description=description;

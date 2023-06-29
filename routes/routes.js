@@ -3,7 +3,7 @@ const router=express.Router();
 const {Sendotp,Signup}=require('../controllers/Signup')
 const {createcategory,getallcategory,getcategoryrelatedcourse}=require('../controllers/Category');
 const {contactus}=require('../controllers/Contactus')
-const {createcourse,getallcourses,deletecourse,getdetailsofcourse,updatecourse,getcoursesofuser,updatecoursestatus}=require('../controllers/Course');
+const {createcourse,getallcourses,deletecourse,getdetailsofcourse,updatecourse,getcoursesofuser,updatecoursestatus,getfulldetailsofcourse}=require('../controllers/Course');
 const {deleteaccount}=require('../controllers/deleteaccount')
 const {login}=require('../controllers/Login')
 const {changepassword,resetpasswordtokengeneration,resetpasswod}=require('../controllers/Password')
@@ -15,7 +15,7 @@ const {createsection,deletesection,updatesection,getsectionsofacourse}=require('
 const {createsubsection,deletesubsection,updatesubsection}=require('../controllers/Subsection')
 const {auth,isInstructor,isstudent,isadmin}=require('../middlewares/authentication')
 const {getorderhistory}=require('../controllers/orderhistory');
-
+const {markascompleted}=require('../controllers/Videocomplete')
 
 router.post("/createCourse", auth,isInstructor,createcourse);
 router.post("/addSection", auth, isInstructor, createsection);
@@ -33,6 +33,7 @@ router.delete("/deleteCourse",auth,isInstructor,deletecourse);
 router.post("/updatecourse",auth,isInstructor,updatecourse);
 router.get("/getcoursesofuser",auth,getcoursesofuser);
 router.put("/updatecoursestatus",auth,updatecoursestatus);
+router.post("/getfulldetailsofcourse",auth,getfulldetailsofcourse);
 
 router.post("/createCategory", auth, isadmin, createcategory)
 router.get("/showAllCategories", getallcategory)
@@ -75,5 +76,6 @@ router.post("/contactus",contactus);
 
 router.get("/getorderhistory",auth,getorderhistory);
 
+router.post("/markascomplete",auth,markascompleted);
 
 module.exports=router;
