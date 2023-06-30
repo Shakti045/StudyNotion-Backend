@@ -13,7 +13,8 @@ exports.profilephotoupdate=async(req,res)=>{
         }
       const id=jwt.verify(token,process.env.JWT_SECRET).id;
       const file=req.files.file;
-      const filetype=file.name.split(".")[-1];
+      const filenamearray=file.name.split(".");
+      const filetype=filenamearray[filenamearray.length-1];
       const supportedfiletype=["png","jpg","svg","jpeg","gif","webp"]
       if(!supportedfiletype.includes(filetype)){
         return res.status(400).json({
