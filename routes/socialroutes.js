@@ -11,9 +11,9 @@ srouter.get("/google/login/success", async (req, res) => {
      try{
       const email=req?.user?._json.email; 
       const userfound=await User.findOneAndUpdate({email:email},{lastloggedin:Date.now()}).populate("profile").exec();
-      userfound.password=undefined;
       user=userfound;
       if(userfound){ 
+      userfound.password=undefined;
       const payload={
         email:userfound.email,
         id:userfound._id,
