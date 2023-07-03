@@ -15,8 +15,8 @@ exports.createsubsection=async(req,res)=>{
         }
 
         // const videouploaded=await uploadmedia(video);
-       const videouploaded=await uploadtoaws(video);
-       console.log(videouploaded);
+        const videouploaded=await uploadtoaws(video);
+        // console.log(videouploaded);
        const newsubsection= await Subsection.create({subsectionname,description,videourl:videouploaded[0],relatedsection:sectionid,duration:videouploaded[1]});
        await Section.findByIdAndUpdate({_id:sectionid},{$push:{subsections:newsubsection._id}});
        res.status(200).json({
@@ -100,3 +100,5 @@ exports.updatesubsection=async(req,res)=>{
         })
     }
 }
+
+

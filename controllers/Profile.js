@@ -1,7 +1,8 @@
 const Profile=require('../models/profile');
 const User=require('../models/user');
 const Courseprogress=require('../models/courseprogress');
-const { default: mongoose } = require('mongoose');
+const  mongoose  = require('mongoose');
+const Course=require('../models/course');
 exports.updateprofile=async (req,res)=>{
     try{
        
@@ -101,6 +102,44 @@ exports.getregisteredcourses=async(req,res)=>{
         return res.status(500).json({
             Success:false,
             Message:"Something error occured while getting registered courses"
+        })
+    }
+}
+
+
+exports.getinstructordashboarddata=async(req,res)=>{
+    try{
+   
+       const {id}=req.user;
+       if(!id){
+        return res.status(404).json({
+            Success:false,
+            Message:"Invalid Request"
+        })
+       }
+       const courses=await Course.find({instructor:id});
+       const data=[];
+       courses.forEach((course)=>{
+          const totalstudent=course.studentsenrolled.length;
+          const profit=course.price*totalstudent;
+          data.push({
+            totalstudent:totalstudent,
+            profit:profit,
+            thumbnail:course.thumbnail,
+            title:course.title,
+            price:course.price
+          })
+       })
+       return res.status(200).json({
+        Success:true,
+        Message:"Data fetched successfully",
+        data
+       })
+    }catch(err){
+        console.log("Error while getting data for instructor dashboaard","=>",err);
+        return res.status(500).json({
+            Success:false,
+            Message:"Error while getting data for instructor dashboaard"
         })
     }
 }

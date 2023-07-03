@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.363.0",
+    "@aws-sdk/s3-request-presigner": "^3.363.0",
     "aws-sdk": "^2.1407.0",
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.36.4",
@@ -22,7 +24,6 @@
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
     "express-session": "^1.17.3",
-    "fluent-ffmpeg": "^2.1.2",
     "get-video-duration": "^4.1.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.0",
@@ -37,6 +38,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-linkedin-oauth2": "^2.0.0",
     "puppeteer": "^18",
-    "razorpay": "^2.8.6"
+    "razorpay": "^2.8.6",
+    "twilio": "^4.13.0"
   }
 }

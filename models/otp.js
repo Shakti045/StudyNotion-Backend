@@ -1,6 +1,7 @@
 const mongoose=require('mongoose')
 const sendemail=require('../utils/mail')
 const otpTemplate=require('../utils/emailverificationmail')
+const {sendmessage}=require('../utils/sendmessage')
 const Otpschema=new mongoose.Schema({
     email:{
         type:String,
@@ -18,9 +19,11 @@ const Otpschema=new mongoose.Schema({
     }
 })
 
+
 Otpschema.post("save",async(doc)=>{
   try{
-    await sendemail(doc.email,"OTP FOR VERIFICATION",`${otpTemplate(doc.otp)}`)
+    // await sendemail(doc.email,"OTP FOR VERIFICATION",`${otpTemplate(doc.otp)}`)
+    await sendmessage('+917205066581',doc.otp);
   }catch(err){
     console.log("Error while sending mail in otp.js","=>",err)
   }

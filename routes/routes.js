@@ -8,7 +8,7 @@ const {deleteaccount}=require('../controllers/deleteaccount')
 const {login}=require('../controllers/Login')
 const {changepassword,resetpasswordtokengeneration,resetpasswod}=require('../controllers/Password')
 const {capturepayment,verifysignature,sendpaymentconfirmation,sendpaymentdetails}=require('../controllers/payment')
-const {updateprofile,getprofile,getregisteredcourses}=require('../controllers/Profile')
+const {updateprofile,getprofile,getregisteredcourses,getinstructordashboarddata}=require('../controllers/Profile')
 const {profilephotoupdate}=require('../controllers/Profilephoto')
 const {createrating,getaveragerating,getallrating,getratingononecourse}=require('../controllers/RatingAndReview')
 const {createsection,deletesection,updatesection,getsectionsofacourse}=require('../controllers/Section');
@@ -22,7 +22,7 @@ router.post("/addSection", auth, isInstructor, createsection);
 router.post("/updateSection", auth, isInstructor, updatesection);
 router.post("/deleteSection", auth, isInstructor, deletesection);
 
-router.post("/addSubSection", auth, isInstructor, createsubsection);
+router.post("/addSubSection", auth, isInstructor,createsubsection);
 router.put("/updateSubSection", auth, isInstructor, updatesubsection)
 router.delete("/deleteSubSection", auth, isInstructor, deletesubsection);
 router.post("/getsectionsofacourse", auth, getsectionsofacourse);
@@ -51,15 +51,12 @@ router.post("/sendpaymentconfirmation",auth,isstudent,sendpaymentconfirmation);
 router.post("/sendpaymentdetails",auth,sendpaymentdetails);
 
 
-// router.delete("/deleteAccount", auth, deleteaccount)
 router.post("/deleteAccount", auth, deleteaccount)
-// router.put("/updateProfile", auth, updateprofile)
 router.post("/updateProfile", auth, updateprofile)
 router.get("/getUserDetails", auth, getprofile)
 router.get("/getEnrolledCourses", auth, getregisteredcourses)
-// router.put("/updateDisplayPicture", auth, profilephotoupdate)
 router.post("/updateDisplayPicture", auth, profilephotoupdate)
-
+router.get("/getinstructordashboarddata",auth,isInstructor,getinstructordashboarddata);
 
 
 
