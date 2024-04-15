@@ -16,6 +16,7 @@ const { getVideoDurationInSeconds } = require('get-video-duration')
             if(err){
               reject("Something went wrong")
             }
+            console.log(data)
             const url=data.Location;
             const duration=await getVideoDurationInSeconds(url);
            resolve([url,duration]);
