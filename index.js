@@ -29,7 +29,7 @@ app.use(fileupload({
 
 
 app.use(cors({
-    origin:"http://localhost:3000",
+    origin:"https://studynotionv1.netlify.app",
     credentials:true
 }))
 
